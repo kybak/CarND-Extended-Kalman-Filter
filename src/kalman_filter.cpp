@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include "kalman_filter.h"
 #include "tools.h"
+#include <cmath>
+
 
 using namespace std;
 
@@ -57,6 +60,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     VectorXd z_pred(3);
     z_pred << rho, phi, rho_dot;
     VectorXd y = z - z_pred;
+
+    while (y[1] < -M_PI)
+        y[1] += 2 * M_PI;
+    while (y[1] > M_PI)
+        y[1] -= 2 * M_PI;
 
     MatrixXd Ht = H_.transpose();
     MatrixXd S = H_ * P_ * Ht + R_;
